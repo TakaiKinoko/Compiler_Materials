@@ -1,0 +1,22 @@
+Simple grammar, augmented:
+
+0. S' --> S $ 
+1. S --> aSbS
+2. S --> a
+
+Parse tree for string "aaababa$"
+
+                  S'
+               /     \
+              /       \
+             S         $
+       /    /  \   \
+      /    /    \   \
+     a    S      b   S
+       / / \ \
+      / /   \ \
+     a S     b S
+      /         \
+     /           \
+    a             a
+

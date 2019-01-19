@@ -1,0 +1,12 @@
+Compilers - Big Picture
+=======================
+
+
+             +-----------+                      +----------+
+  source --> | front end | --> intermediate --> | back end | --> machine code
+  program    +-----------+      language        +----------+
+                machine                           machine
+              independent                        dependent
+
+
+

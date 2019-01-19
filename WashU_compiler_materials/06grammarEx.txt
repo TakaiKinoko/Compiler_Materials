@@ -1,0 +1,45 @@
+The following example shows a typical grammar in a programming language.
+It's for a list of declarations, simple declarations that declare variables.
+For now, let's not allow pointers or references or arrays, etc. The list
+may be empty.
+
+An example of a declaration list is
+   int i, j, k;
+   float x, y;
+   char a, b, c, d;
+   bool found;
+
+Because it's easy to run out of meaningful names, I use "list" in my 
+nonterminal name when it's for a list. Notice that this example has the two
+typical kinds of syntax: the semicolon, a terminator, and a comma, a separator.
+The semicolon terminates every declaration. The comma separates identifiers
+from the rest of the identifier list.
+
+Use recursion, a declaration list is made up of one declaration (the int line
+in the above example) followed by a declaration list (a smaller list that has
+the same format, the float/char/bool lines). The base case is an empty list.
+
+   <decl-list> --> empty | <one-decl> <decl-list>
+
+Now expand the <one-decl> non-terminal. As soon as you see a list is needed,
+create another non-terminal and expand it later.
+
+   <one-decl> --> <type> <ident-list> ";"
+
+Using the same recursive problem-solving on <ident-list>. It has one identifer
+followed by a comma separator, followed by an <ident-list>. It can't be empty,
+so the base case is one identifer.
+
+   <ident-list> --> <<ident>> | <<ident>> "," <ident-list>
+
+The <<ident>> is a token. When you want a specific character, just the symbol
+or quotes can be used around the symbol to show it, but an identifer can be
+many strings, yet it is still a token, recognized by the lexical analyzer.
+It is not a non-terminal and is not expanded. The double pointed brackets
+is how we show this.
+
+Expanding <type> give production rules for all the non-terminals and
+finishes this grammar:
+
+   <type> --> "int" | "float" | "char" | "bool" | and so on
+

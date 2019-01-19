@@ -1,0 +1,49 @@
+Compiler Phases
+===============
+
+                     stream of chars  (source program)
+                            |
+                            v                All tokens are described 
+                     +------------------+    by regular expressions. 
+                  . >| lexical analyzer |    Regular expressions generate 
+                 .   +------------------+    regular languages.
+                 .          |
+                 .   stream of tokens  (Token: a meaningful grouping of chars,
+                  .         |               e.g., ==  <=  ]  while  SIZE  ,  )
+                   .        v
+ +--------+      +----------------------+   All programming languages are
+ | Symbol |<---->|  syntactic/semantic  |   described by context-free grammars. 
+ | Table  |      |  analyzer (parser)   |   Context-free grammars generate
+ +--------+      +----------------------+   context-free languages.
+        ^                   |
+         \        intermediate code  (represented as tree, triple, or quadruple)
+          \                 |
+           \                v
+            \       +----------------+
+             +----> |  optimization  |
+                    +----------------+
+                            |
+              improved intermediate code  
+                            |
+                            v
+                    +----------------+
+                    | code generator |
+                    +----------------+
+                            |
+                       object code
+                            |
+                            v
+                  +---------------------+
+                  | linking and loading |
+                  +---------------------+
+                            |
+                            v
+                 executable object program
+
+
+While the phases looks linear, in a compiler program, the lexical analyzer
+and parser phases are really more of a loop. The lexical analyzer keeps
+feeding the parser tokens, one at a time, while the parser puts the tokens
+together to try to recognize a statement in the language. When it does,
+it performs the actions (code) you have specified.
+

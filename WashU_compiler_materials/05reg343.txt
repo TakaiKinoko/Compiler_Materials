@@ -1,0 +1,47 @@
+CSS 343     Regular Expression Problem Set            (Carol Zander, CSS 343)
+
+1.  Regular expressions
+    Let the alphabet = {a,b}.  Note  e  is the empty string.  
+    Write regular expressions for:
+
+      All words in which 'a' appears tripled (and only tripled, meaning all
+      a's must appear in groups of three)(the empty string is valid).
+
+      All words that contain at least one of the given strings s1, s2, s3, s4:
+      (where s1, s2, s3, s4 are strings made up only of a's and/or b's).  For 
+      example, s1 could be "ab" or "abbaa" or "aaa" or "b" .
+
+      All words that contain exactly three b's in total.
+
+      All words that contain exactly two b's or exactly three b's.
+
+      All strings that end in a double letter.
+
+      All strings that have exactly one double letter in them.
+
+      All strings that do not have the substring "ab" .
+
+2.  Write a regular expression for all unsigned numbers in Pascal.  They are
+    strings such as 5280, 39.37, 499E3, 63.36E4, 1.894E-3, 2.3478E+11. 
+    You are not allowed to have a naked decimal point.  For example the number
+    5.  or  .5 is not allowed, must use 5.0 and 0.5.  The E is for exponent,
+    essentially scientific notation.  
+
+For these problems, the alphabet is {a,b}.
+3.  Write reg expr for words with 'b' as the second letter.
+
+4.  Write reg expr for words baa, ab, and abb .
+
+5.  Write reg expr for only those words that have an even 
+    number of letters total.
+
+6.  Write reg expr for only those words that do not end in "ba" .
+
+7.  Let the alphabet be {0,1}.  Write a regular expression for
+    the set of all strings not containing 101 as a substring.
+
+Don't worry too much about this last problem.  It's one of those difficult ones
+that sounds easy, but isn't and also isn't particularly enlightening.  If you
+still want to write it, note that I drew the finite state machine and wrote the
+regular expression from that.  Maybe someone can find a more elegant solution.
+

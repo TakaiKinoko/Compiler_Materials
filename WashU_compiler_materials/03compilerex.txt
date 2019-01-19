@@ -1,0 +1,66 @@
+Compiler Phases applied to an assignment statement     
+==================================================
+
+              position := initial + rate * 60;     // assignment operator is :=
+                            |
+                            v
+                     +------------------+
+                     | lexical analyzer |
+                     +------------------+
+                            |
+                            v
+                id := id + id * 60 ;   
+idToken assignToken idToken plusToken idToken multToken numToken semicolonToken
+The idTokens and numToken keep track of their associated value, so for clarity
+view as:        id1 := id2 + id3 * 60 ;
+                            |
+                            v
+                +------------------------+  
+   . . . . . . .|   syntactic/semantic   |. . . . . . . . . . . . . . . . . .   
+  .             |   analyzer (parser)    |                                    .
+  .             +------------------------+                                    .
+  .                         |                                                 .
+  .                         v                                                 .
+  .               temp1 := IntToFloat(60)                                     .
+  .               temp2 := id3 * temp1                                        .
+  .               temp3 := id2 + temp2                                        .
+  .               id1   := temp3                                              .
+  .uses                     |                                        uses     .
+  .grammar                  v                                        grammar  .
+  .to check         +----------------+                               to check .
+  .for correct      |  optimization  |                               semantics.
+  .syntax           +----------------+                                        .
+  .                         |                                                 .
+  .                         v                                                 .
+  .               temp1 := id3 * 60.0                                         .
+  .               id1   := id2 + temp1                                        .
+  .                         |                                                 .
+  .                         v                                                 .
+  .                 +----------------+                                        .
+  .                 | code generator |                                        .
+  .                 +----------------+                                        .
+  .                         |                                                 .
+  .                         v                                                 .
+  .   LOADF  id3,R2   // load float value of id3 in register 2                .
+  .   MULF   #60.0,R2 // multiply 60 times contents of register 2             .
+  .   LOADF  id2,R1   // load float value of id2 in register 1                .
+  .   ADDF   R2,R1    // add contents of register 2 to contents of register 1 .
+  .   STOREF R1,id1   // store contents of register 1 at id1                  .
+   .                                                                         . 
+     .                                                                     .
+      . . syntax: form                            semantic: meaning  . . .
+          ============                            =================
+           assignmentStmt                               :=
+           /  |    |  \                               /    \
+         id  :=    E   ;                           id1      +
+        /     |  / | \                                    /   \
+    position    E  +  T                                 id2    *
+               /    / | \                                    /   \
+              T    T  *  F                                 id3  IntToFloat(60)
+             /    /      |
+            F    F     number               -- make sure vars are declared
+           /    /        |                     in the symbol table
+         id   id        60                  -- type-checking occurs
+        /    /                              -- get addresses from symbol table 
+    initial rate
+

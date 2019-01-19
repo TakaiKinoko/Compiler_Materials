@@ -1,0 +1,80 @@
+Consider the typical grammar in a programming language for a list of
+declarations:
+
+   <decl-list> --> empty | <one-decl> <decl-list>
+   <one-decl> --> <type> <ident-list> ";"
+   <ident-list> --> <<ident>> | <<ident>> "," <ident-list>
+   <type> --> "int" | "float" | "char" | "bool" | and so on
+
+Appreviate this grammar as follows:
+   DL is used for <decl-list> 
+   OL is used for <one-decl> 
+   IL is used for <ident-list> 
+   T  is used for <type> 
+   I  is used for <<ident>> 
+With these abbrevations, the grammar is:
+   DL --> empty | OD DL
+   OD --> T IL ";"
+   IL --> I | I "," IL
+   T --> "int" | "float" | "char" | "bool" | and so on
+
+An example of a declaration list is
+   int i, j, k;
+   float x, y;
+   char a, b;
+   bool found;
+
+Show how the grammar is used by either showing a parse tree or a derivation.
+A parse tree for the example is shown.  The leaves of the tree make up
+the characters of the string.
+
+                         DL
+              /                  \
+            OD                          DL
+         /  |  \                  /           \
+        T   IL  ;              OD                DL
+      /   / | \              /  |  \         /       \
+    int  I  ,  IL           T   IL  ;      OD            DL
+        /     / | \        /   /|\       /  |  \       /    \
+       i     I  , IL    float I , IL    T  IL   ;    OD      DL
+            /     /          /    /    /  / | \    /  |  \     \
+           j     I          x    I  char I  , IL  T   IL  ;    empty
+                /               /       /     /  /    /
+               k               y       a     I bool  I
+                                            /       /
+                                           b       found
+
+A derivation shows the same thing, but shows the replacement of every
+non-terminal. The ==> is used to show the replacements.
+
+DL ==> OD DL
+   ==> T IL ; DL
+   ==> int IL ; DL 
+   ==> int IL ; DL 
+   ==> int I , IL ; DL 
+   ==> int i , IL ; DL 
+   ==> int i , I , IL ; DL 
+   ==> int i , j , IL ; DL 
+   ==> int i , j , I ; DL 
+   ==> int i , j , k ; DL 
+   ==> int i , j , k ; OD DL 
+   ==> int i , j , k ; T IL ; DL 
+   ==> int i , j , k ; float IL ; DL 
+   ==> int i , j , k ; float I , IL ; DL 
+   ==> int i , j , k ; float x , IL ; DL 
+   ==> int i , j , k ; float x , I ; DL 
+   ==> int i , j , k ; float x , y ; DL 
+   ==> int i , j , k ; float x , y ; OD DL 
+   ==> int i , j , k ; float x , y ; T IL ; DL 
+   ==> int i , j , k ; float x , y ; char IL ; DL 
+   ==> int i , j , k ; float x , y ; char I , IL ; DL 
+   ==> int i , j , k ; float x , y ; char a , IL ; DL 
+   ==> int i , j , k ; float x , y ; char a , I ; DL 
+   ==> int i , j , k ; float x , y ; char a , b ; DL 
+   ==> int i , j , k ; float x , y ; char a , b ; OD DL 
+   ==> int i , j , k ; float x , y ; char a , b ; T IL ; DL 
+   ==> int i , j , k ; float x , y ; char a , b ; bool IL ; DL 
+   ==> int i , j , k ; float x , y ; char a , b ; bool I ; DL 
+   ==> int i , j , k ; float x , y ; char a , b ; bool found ; DL 
+   ==> int i , j , k ; float x , y ; char a , b ; bool found ; empty
+

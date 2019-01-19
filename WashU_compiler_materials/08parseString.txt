@@ -1,0 +1,57 @@
+
+
+
+
+                   S'                           Action          GOTO
+                   |                        a      b      $      S
+                   |                     +------+------+------++---+
+                   S                   0 |  s2  |      |      || 1 |
+              /  /   \  \                +------+------+------||---+
+            /   /     \   \            1 |      |      |accept||   |
+          a    S       b    S            +------+------+------||---+
+            / / \ \          \         2 |  s2  |  r2  |  r2  || 3 |
+           / /   \ \          \          +------+------+------||---+
+          a S     b S          a       3 |      |  s4  |      ||   |
+           /         \                   +------+------+------||---+
+          /           \                4 |  s2  |      |      || 5 |
+         a             a                 +------+------+------||---+
+                                       5 |      |  r1  |  r1  ||   |
+Parse the string  aaababa$               +------+------+------++---+
+
+Augmented grammar:
+0. S' --> S$
+1. S --> aSbS
+2. S --> a
+
+Parsing operation
+-- Always start with zero on stack
+-- Top of stack tells the row
+-- Next input symbol tells the column
+
+Shift operation:
+Push state on stack (use/remove one input symbol)
+
+Reduce operation:
+1. Pop the number of things of RHS of the rule being reduced
+2. Push the GOTO state of the top of the stack (after pops of step 1), 
+   [top of stack, LHS of rule]
+3. Note - do not use up an input symbol
+
+                                                   LHS of reducing rule __
+                                               top of stack after pop __  \
+                                                                        \  |
+Stack            Input     Table  Action      Comments                   | |
+0  ............  aaababa$  [0,a]  s2                                     | |
+0 2  ...........  aababa$  [2,a]  s2                                     | |
+0 2 2  ..........  ababa$  [2,a]  s2                                     v v
+0 2 2 2  .........  baba$  [2,b]  r2 S-->a     pop 2        push 3 from [2,S]
+0 2 2 3  .........  baba$  [3,b]  s4
+0 2 2 3 4  ........  aba$  [4,a]  s2
+0 2 2 3 4 2  .......  ba$  [2,b]  r2 S-->a     pop 2        push 5 from [4,S]
+0 2 2 3 4 5  .......  ba$  [5,b]  r1 S-->aSbS  pop 2,3,4,5  push 3 from [2,S]
+0 2 3 ..............  ba$  [3,b]  s4
+0 2 3 4 .............  a$  [4,a]  s2
+0 2 3 4 2 ............  $  [2,$]  r2 S-->a     pop 2        push 5 from [4,S]
+0 2 3 4 5 ............  $  [5,$]  r1 S-->aSbS  pop 2,3,4,5  push 1 from [0,S]
+0 1  .................  $  [1,$]  accept
+

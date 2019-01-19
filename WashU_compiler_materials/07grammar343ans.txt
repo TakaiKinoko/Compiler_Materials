@@ -1,0 +1,224 @@
+CSS 343     Grammar homework solutions                  (Carol Zander, CSS 343)
+
+Note that grammars are not unique.  Yours may look different from mine and
+still be correct.  Show me if you're not sure.  In my grammars,  empty  means
+the empty string (lambda or epsilon used in class).
+
+(1).  Write a grammar for all unsigned numbers in Pascal.  They are
+      strings such as 5280, 39.37, 86E9, 6.336E4, 1.894E-3, 2.3478E+11. 
+      (The E is essentially scientific notation, stands for exponent.)
+      You are not allowed to have a naked decimal point.  For example,
+      the number  5.  or  .5   is not allowed.  It must be  0.5  or  5.0 .
+      The fractional part, the exponential part, and the sign on the 
+      exponential part are optional.
+      
+<number>       -->  <digit-list> <opt-fraction> <opt-exp>
+<digit-list>   -->  <digit> | <digit> <digit-list>
+<digit>        -->  0 | 1 | 2 | ... | 9
+<opt-fraction> -->  . <digit-list> | empty
+<opt-exp>      -->  E <opt-sign> <digit-list> | empty
+<opt-sign>     -->  + | - | empty
+
+------------------------------------------------------------------------------
+(2).  Write BNF notation.
+(a).  A Pascal procedure header statement (procedure is a void function).
+
+   Notes: In the Pascal procedure header, keywords are: procedure, var.  
+          In this example, the type keywords are:  integer, real, boolean.  
+              (real is the same as float.)
+          Identifiers are:  name, another, i, j, k, x, y, found.
+          The 'var' optionally precedes a list of identifiers.  When 'var' is
+          used, it's pass by address.  Without 'var' it's pass by value.
+          For this problem (since you don't know Pascal well), we will ignore
+          that you can pass procedures and functions as parameters.
+   Examples:
+                procedure name (var i,j,k: integer; 
+                                    l,m: integer;
+                                var x,y: real;
+                                    found: boolean);
+
+                procedure another;
+
+<<ident>> represents a token, it's not quite a terminal, but it's not a
+non-terminal either.  It's recognized by the lexical analyzer.
+
+BNF notation:
+<proc-header>           -->   procedure  <<ident>> (<formal-parameter-list>);
+                            | procedure  <<ident>> ;
+
+<formal-parameter-list> -->   <one-param> 
+                            | <one-param> ; <formal-parameter-list> 
+
+<one-param>             -->   var <id-list>  :  <type>
+                            | <id-list>  :  <type>
+
+---------------------------------------------------------------
+(b).  A Pascal procedure call statement.
+        For the example procedures above, the following are examples.
+        You can pass anything you can pass in any other language.
+        name(i, j, k, l, m, x, y, found);
+        name(num1, num2, num3, 10, someConst+1, A[i], B[2], true);
+        another;
+
+BNF notation:
+<proc-call>             -->   <<ident>> ( <actual-parameter-list> )
+                            | <<ident>>
+
+<actual-parameter-list> --> <one-param> | <one-param> , <actual-parameter-list> 
+
+<one-param>             --> <expr> | <const> | <const-expr>
+
+---------------------------------------------------------------
+(c). A  C++  switch statement.
+        e.g.,  switch (ch) {
+                  case 'a': ...
+                  case 'b': ...
+                  default: ...     // optional
+               }
+
+<switch>      --> switch ( <expr> ) { <case-list> <opt-default> <case-list> }
+<opt-default> --> empty | default: <statement>
+<case-list>   --> empty | <one-case> <case-list>
+<one-case>    --> case <const-value>: <statement>
+<statement>   --> <block> | <assignment> | <if> | ...
+<const-value> --> <int-const-value> | <char-const-value> | ...
+<expr>        --> ...
+
+---------------------------------------------------------------
+(d).  C++  float literals (constants).
+
+<float-literal> -->   <real> <suffix> 
+                    | <real> <exponent> <suffix>
+                    | <integer> <exponent> <suffix>
+
+<exponent>      -->   'e' + <integer>    (note: not empty, the letter 'e' )
+                    | 'e' - <integer>
+                    | 'e' <integer>
+                    | E + <integer>
+                    | E - <integer>
+                    | E <integer> 
+ 
+<integer>       -->   <digit> | <digit> <integer>
+
+<real>          -->   . <integer>
+                    | <integer> .
+                    | <integer> . <integer>
+
+<suffix>        -->   f | F | l | L | empty
+
+------------------------------------------------------------------------------
+(3).  Using the E, T, F grammar, draw a parse tree for  A = B * (C + (D)) .
+(E is for <expr>, T is for <term>, F is for <factor>.)
+Use the assign production rule:  <assign> --> <ref> = <expr>
+
+    <assign>
+  /    |    \
+<ref>  =     E
+  |          |
+<<id>>       T
+  |       /  |  \
+  A     T    *    F
+        |       / | \
+        F      (  E  )
+        |       / | \
+        B     E   +   T
+              |       |         
+              T       F
+              |     / | \       
+              F    (  E  )
+              |       |   
+              C       T    
+                      |
+                      F
+                      |
+                      D
+
+------------------------------------------------------------------------------
+(4).  Prove that the following grammar is ambiguous:
+      S    -->  A
+      A    -->  A + A  |  <id>
+      <id> --> a | b | c
+A grammar is ambiguous if the same string has 2 different parse trees.
+Here are two distinct parse trees for  a + b + c .
+
+        S                 S
+        |                 |
+        A                 A
+      / | \             / | \
+     A  +  A           A  +   A
+     |   / | \       / | \    |
+   <id> A  +  A     A  +  A  <id>
+     |  |     |     |     |   |
+     a <id>  <id>  <id>  <id> c
+        |     |     |     |
+        b     c     a     b
+
+------------------------------------------------------------------------------
+(5).  Describe the language defined by the grammar:
+      S --> A B C
+      A --> a A | a
+      B --> b B | b
+      C --> c C | c
+
+This generates a sequence of 1 or more 'a's followed by 1 or more 'b's
+followed by 1 or more 'c's.
+
+------------------------------------------------------------------------------
+(6).  Often syntax diagrams are given to explain the syntax in a language.
+      Here is a syntax diagram for you to practice writing a grammar from. 
+      Write a grammar for this Pascal variable-reference in BNF notation.  
+
+In syntax diagrams, anything found in a rectangle is a non-terminal, meaning
+it will be expanded, ie, there will be a syntax diagram for it.  Terminals are
+usually in circles, I put them in quotes.
+
+This doesn't mean that the only non-terminals are the ones given.  Usually
+you make more.  Whenever you find a cycle, it is best to create a non-terminal.
+For example, <expr>  is the non-terminal for one expression.  Make the
+non-terminal <expr-list> to handle that cycle including the comma.
+
+A variable reference in Pascal is represented by the following syntax diagram.
+The  ^  is used for pointers in Pascal.  p^.info  is the same as  p->info 
+in C++.  Some example variable references:
+  number
+  student[i].birthday.year
+  list^.infoptr^.ID
+  matrix[i,j,k].value
+  ptr^
+
+<var-ref>:
+          +----------------+
+--------> | variable ident | ---+
+   |      +----------------+    |
+   |      +----------------+    |
+   +----> | field ident    | -->|
+          +----------------+    v
+                                |<---------------------------------------
+                                |            +-------+                  ^
+                                |--> '[' --->| expr  |-----> ']' -------|
+                                |         ^  +-------+  |               |
+                                |         |             |               |
+                                |         +--- ',' <----+               |
+                                |            +-------------+            |
+                                |--> '.' --->| field ident |----------->|
+                                |            +-------------+            |
+                                |---------------> '^' ----------------->
+                                +------------------------------------------>
+
+<var-ref>  -->  <var-ident> <qual-list>  |  <field-ident> <qual-list>
+
+<qual-list>  -->  <qual> <qual-list>  |  empty
+
+<qual>  -->  [ <expr-list> ]  |  . <field-ident>  |  ^
+
+<expr-list>   -->  <expr>  |  <expr> , <expr-list>
+
+------------------------------------------------------------------------------
+(7).  Write a grammar which looks like the E, T, F grammar but now
+      addition and subtraction have a higher precedence than multiplication
+      and division and sub-expressions are evaluated from right to left.
+
+E --> T * E  |  T / E  |  T
+T --> F + T  |  F - T  |  F
+F --> (E)  |  <<number>>  |  <<ident>>
+

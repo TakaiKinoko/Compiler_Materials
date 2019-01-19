@@ -1,0 +1,79 @@
+Perfect Hash Table for Modula-2 Reserved Words (written in Modula-2)
+----------------------------------------------          
+
+Here is a minimal perfect hash table for the reserved words of Modula-2.
+Define two arrays.  The lvalue array contains the integers given below,
+defined as:
+   lvalue: ARRAY ['A'..'Y'] OF INTEGER;
+This is an array of ints, called lvalue, where the subscripts are chars.
+
+The hashTable array contains the reserved words of Modula-2, defined as:
+   hashTable : ARRAY [2..41] OF ARRAY [1..14] OF CHARACTER;
+This is a 2-D array of chars, called hashTable, where the row subscripts 
+range from 2 to 41 and the column subscripts range from 1 to 14.
+
+In Modula-2, arrays can be subscripted by any ordinal type, that is, any
+type which is countable (equivalent to ints).
+
+lvalue: subscript  value                  hashTable:     reserved word
+          A        24                     hashTable[2]    TO
+          B         0                     hashTable[3]    NOT
+          C        25                     hashTable[4]    OR
+          D        11                     hashTable[5]    TYPE
+          E        13                     hashTable[6]    IN
+          F        20                     hashTable[7]    VAR
+          G        32                     hashTable[8]    RETURN
+          H         0                     hashTable[9]    REPEAT
+          I         4                     hashTable[10]   PROCEDURE
+          J         0                     hashTable[11]   IMPORT
+          K         0                     hashTable[12]   POINTER
+          L        30                     hashTable[13]   DO
+          M        18                     hashTable[14]   SET
+          N         0                     hashTable[15]   UNTIL
+          O         0                     hashTable[16]   DIV
+          P         1                     hashTable[17]   THEN
+          Q         3                     hashTable[18]   WITH
+          R         2                     hashTable[19]   IMPLEMENTATION
+          S        11                     hashTable[20]   EXPORT
+          T         0                     hashTable[21]   EXIT
+          U        10                     hashTable[22]   OF
+          V         2                     hashTable[23]   WHILE
+          W        14                     hashTable[24]   FROM
+          X         0                     hashTable[25]   FOR
+          Y        37                     hashTable[26]   IF
+                                          hashTable[27]   END
+The hashTable array contains the          hashTable[28]   ELSE
+actual keywords.  The lvalue array        hashTable[29]   ELSIF
+is specifically set to have values        hashTable[30]   CONST
+so the hash function will be perfect.     hashTable[31]   ARRAY
+                                          hashTable[32]   MOD
+                                          hashTable[33]   RECORD
+How did this come about?                  hashTable[34]   LOOP
+Someone played around with values,        hashTable[35]   MODULE
+looked for some relatively unique         hashTable[36]   QUALIFIED
+set of characters to use in the           hashTable[37]   BEGIN
+function. The first and third letters     hashTable[38]   AND
+of the word, typically being consonants   hashTable[39]   BY
+turned out to be useful.                  hashTable[40]   CASE
+                                          hashTable[41]   DEFINITION
+
+Now define the hash function for arbitrary words.
+Then either the word is found at the selected position in the
+hashTable array, or it is not a Modula-2 reserved word.
+
+   FUNCTION hash(word: ARRAY [1..N] OF CHARACTER;
+              itsLength: INTEGER): INTEGER;
+   BEGIN
+      RETURN (itsLength + lvalue[word[1]] + lvalue[word[min(3, itsLength)]]);
+   END hash;
+
+The parameter word is a char array, but subscripts start at one.  The parameter
+itsLength is an int.  The function's return type is int found after parameters.
+
+Examples
+--------
+          itsLength + lvalue[word[1]] + lvalue[word[min(3, itsLength)]]
+QUALIFIED     9     + lvalue[Q]       + lvalue[word[3]]  =  9 + 3 + 24  =  36
+IN            2     + lvalue[I]       + lvalue[word[2]]  =  2 + 4 +  0  =   6
+
+
